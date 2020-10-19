@@ -10,7 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable,HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -19,10 +19,36 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
+//        'email',
         'password',
-        'username'
+        'username',
+        'address',
+        'location',
+        'phone'
     ];
+
+    public function getAddressAttribute()
+    {
+        return isset($this->attributes['address']) != null ? $this->attributes['address'] : '';
+    }
+
+    public function getCreatedAtAttribute()
+    {
+        return date('Y-m-d h:i:s A', strtotime($this->attributes['created_at']));
+    }
+
+    public function getUpdatedAtAttribute()
+    {
+        return date('Y-m-d h:i:s A', strtotime($this->attributes['updated_at']));
+    }
+
+
+    /** Items */
+    public function items()
+    {
+        return $this->hasMany('App\Models\Item');
+    }
+
 
     /**
      * The attributes that should be hidden for arrays.

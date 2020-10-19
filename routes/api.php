@@ -13,10 +13,36 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+/** User */
+Route::group(['prefix' => 'user'], function () {
+    /** Login User */
+    Route::post('/login', [\App\Http\Controllers\Api\UserController::class, 'login']);
 
-/** Login User */
-Route::post('/user/login', [\App\Http\Controllers\Api\UserController::class, 'login']);
+    /** Register User */
+    Route::post('/register', [\App\Http\Controllers\Api\UserController::class, 'register']);
 
-Route::middleware('auth:sanctum')->post('/user', function (Request $request) {
-    return $request->user();
+
+});
+
+
+/** Protected Routes */
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    /** User */
+    Route::group(['prefix' => 'user'], function () {
+        /** Get User Detail */
+        Route::post('/profile', [\App\Http\Controllers\Api\UserController::class, 'profile']);
+    });
+    /** Item */
+    Route::group(['prefix' => 'item'], function () {
+        /** Create */
+        Route::post('/create', [\App\Http\Controllers\Api\Item\IndexController::class, 'create']);
+        /** List */
+        Route::post('/list', [\App\Http\Controllers\Api\Item\IndexController::class, 'getItems']);
+    });
+});
+
+/** Item */
+Route::group(['prefix' => 'item'], function () {
+    /** Create */
+    Route::get('/create', [\App\Http\Controllers\Api\Item\IndexController::class, 'create']);
 });

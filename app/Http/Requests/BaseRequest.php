@@ -1,27 +1,23 @@
 <?php
 
-namespace App\Http\Requests\User;
+namespace App\Http\Requests;
 
+use App\Http\Controllers\Api\Constant;
 use App\Traits\ResponseTrait;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Response;
 
-class LoginRequest extends FormRequest
+class BaseRequest extends FormRequest
 {
     use ResponseTrait;
+
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
     public function authorize()
-    {
-        return true;
-    }
-
-    public function wantsJson()
     {
         return true;
     }
@@ -34,19 +30,14 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'username' => 'required',
-            'password' => 'required'
+            //
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
-        foreach ($validator->errors()->toArray() as $value) {
-            $_messages[] = $value[0];
-        }
-        throw new HttpResponseException($this->badRequestResponse([
-            'status'=>0,
-            'message'=>$_messages
-        ]));
+
+        throw new HttpResponseException(Constant::failResponse('', 'Please Fill Require Fields', Constant::$_badRequestStatus)
+        );
     }
 }

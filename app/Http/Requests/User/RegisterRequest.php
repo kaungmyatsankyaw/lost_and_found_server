@@ -3,25 +3,20 @@
 namespace App\Http\Requests\User;
 
 use App\Traits\ResponseTrait;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Response;
 
-class LoginRequest extends FormRequest
+class RegisterRequest extends FormRequest
 {
     use ResponseTrait;
+
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
     public function authorize()
-    {
-        return true;
-    }
-
-    public function wantsJson()
     {
         return true;
     }
@@ -34,8 +29,9 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'username' => 'required',
-            'password' => 'required'
+            'name' => 'required',
+            'password' => 'required|min:8',
+            'username' => 'required|unique:users'
         ];
     }
 
@@ -44,9 +40,10 @@ class LoginRequest extends FormRequest
         foreach ($validator->errors()->toArray() as $value) {
             $_messages[] = $value[0];
         }
+//        return ($validator->errors()->toJson());
         throw new HttpResponseException($this->badRequestResponse([
-            'status'=>0,
-            'message'=>$_messages
+            'status' => 0,
+            'message' => $_messages
         ]));
     }
 }
