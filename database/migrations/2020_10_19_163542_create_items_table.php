@@ -19,6 +19,7 @@ class CreateItemsTable extends Migration
             $table->string('name');
             $table->text('contact_phone');
             $table->integer('type');
+            $table->integer('item');
             $table->text('description')->nullable();
             $table->string('address')->nullable();
             $table->point('location')->nullable();

@@ -23,6 +23,7 @@ class IndexController extends Controller
         $_item_name = $request->get('name');
         $_item_type = $request->get('type');
         $_item_description = $request->get('description');
+        $_item = $request->get('item');
         $_item_address = $request->get('address');
         $_item_location = $request->get('location');
         $_item_found_time = $request->get('time');
@@ -34,6 +35,7 @@ class IndexController extends Controller
             'user_id' => $_user_id,
             'name' => $_item_name,
             'contact_phone' => $_item_phone,
+            'item' => $_item,
             'type' => $_item_type,
             'description' => $_item_description,
             'address' => $_item_address,
@@ -47,7 +49,7 @@ class IndexController extends Controller
 //            $_item->location = $_item_location;
         }
 
-        return Constant::successResponse($_item->makeHidden('location','updated_at'), 'Item Create Success', Constant::$_createdStatus);
+        return Constant::successResponse($_item->makeHidden('location', 'updated_at'), 'Item Create Success', Constant::$_createdStatus);
 
     }
 
