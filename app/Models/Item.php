@@ -50,7 +50,7 @@ class Item extends Model
         }
     }
 
-    public function getItemUserName(){
+    public function getItemUserNameAttribute(){
         return $this->attributes['username']=$this->user()->name;
     }
 }
