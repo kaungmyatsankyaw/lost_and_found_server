@@ -31,6 +31,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::group(['prefix' => 'user'], function () {
         /** Get User Detail */
         Route::post('/profile', [\App\Http\Controllers\Api\UserController::class, 'profile']);
+
+
     });
     /** Item */
     Route::group(['prefix' => 'item'], function () {

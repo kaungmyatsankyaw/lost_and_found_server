@@ -27,14 +27,14 @@ class IndexController extends Controller
         $_item_address = $request->get('address');
         $_item_location = $request->get('location');
         $_item_found_time = $request->get('time');
-        $_item_phone = $request->get('phone');
+//        $_item_phone = $request->get('phone');
 
         ['lat' => $_lat, 'lng' => $_lng] = $_item_location;
 
         $_item = Item::create([
             'user_id' => $_user_id,
             'name' => $_item_name,
-            'contact_phone' => $_item_phone,
+            'contact_phone' => $request->user()->phone,
             'item' => $_item,
             'type' => $_item_type,
             'description' => $_item_description,
