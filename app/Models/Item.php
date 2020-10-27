@@ -49,4 +49,8 @@ class Item extends Model
                 return 'Found';
         }
     }
+
+    public function getItemUserName(){
+        return $this->attributes['username']=$this->user()->name;
+    }
 }

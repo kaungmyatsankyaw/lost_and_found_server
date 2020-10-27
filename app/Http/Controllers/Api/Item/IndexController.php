@@ -56,7 +56,7 @@ class IndexController extends Controller
     public function getItems()
     {
         $_items = Item::all()->makeHidden(['location', 'updated_at']);
-//        return $_items;
+
         return Constant::successResponse($_items, 'Item List', Constant::$_createdStatus);
 
     }
