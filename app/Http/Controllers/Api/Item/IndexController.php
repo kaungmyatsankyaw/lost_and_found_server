@@ -49,15 +49,14 @@ class IndexController extends Controller
 //            $_item->location = $_item_location;
         }
 
-        return Constant::successResponse($_item->makeHidden('location', 'updated_at'), 'Item Create Success', Constant::$_createdStatus);
+        return Constant::successResponse($_item->makeHidden('location', 'updated_at', 'user'), 'Item Create Success', Constant::$_createdStatus);
 
     }
 
     public function getItems()
     {
-        $_items = Item::all()->makeHidden(['location', 'updated_at']);
-
-        return Constant::successResponse($_items, 'Item List', Constant::$_createdStatus);
+        $_items= Item::jsonPaginate()->makeHidden(['location','update','user']);
+        return Constant::successResponse($_items, 'Item List', Constant::$_successStatus);
 
     }
 }

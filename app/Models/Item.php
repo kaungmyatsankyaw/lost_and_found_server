@@ -19,6 +19,8 @@ class Item extends Model
         return $this->belongsTo('App\Models\User');
     }
 
+    protected $appends = ['username', 'recent'];
+
     public function getAddressAttribute()
     {
         return isset($this->attributes['address']) != null ? $this->attributes['address'] : '';
@@ -50,7 +52,13 @@ class Item extends Model
         }
     }
 
-    public function getItemUserNameAttribute(){
-        return $this->attributes['username']=$this->user()->name;
+
+    public function getUsernameAttribute()
+    {
+        return $this->user->name; //or however you want to manipulate it
     }
-}
+
+    public function getRecentAttribute()
+    {
+        return date('Y-m-d') == date('Y-m-d', strtotime($this->attributes['created_at']));
+    }}
