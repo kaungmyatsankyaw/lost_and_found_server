@@ -55,7 +55,7 @@ class IndexController extends Controller
 
     public function getItems()
     {
-        $_items= Item::jsonPaginate()->makeHidden(['location','update','user']);
+        $_items = Item::orderBy('created_at', 'desc')->jsonPaginate()->makeHidden(['location', 'update', 'user']);
         return Constant::successResponse($_items, 'Item List', Constant::$_successStatus);
 
     }
