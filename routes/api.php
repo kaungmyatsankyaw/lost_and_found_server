@@ -41,6 +41,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('/create', [\App\Http\Controllers\Api\Item\IndexController::class, 'create']);
         /** List */
         Route::post('/list', [\App\Http\Controllers\Api\Item\IndexController::class, 'getItems']);
+
+        /** Delete */
+        Route::post('/delete',[\App\Http\Controllers\Api\Item\IndexController::class,'delete']);
     });
 });
 

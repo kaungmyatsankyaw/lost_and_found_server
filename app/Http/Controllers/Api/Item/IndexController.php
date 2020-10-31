@@ -58,4 +58,16 @@ class IndexController extends Controller
         return Constant::successResponse($_items, 'Item List', Constant::$_successStatus);
 
     }
+
+    public function delete(Request $request)
+    {
+        $_item_id = $request->get('id');
+        $_item = Item::where('user_id', $request->user()->id)->get();
+        if ($_item) {
+            Item::destroy($_item_id);
+            return Constant::successResponse([], 'Item Delete', Constant::$_successStatus);
+        } else {
+            return Constant::failResponse([], 'Item Delete', Constant::$_unauthorizedStatus);
+        }
+    }
 }
