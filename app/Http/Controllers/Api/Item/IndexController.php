@@ -63,6 +63,7 @@ class IndexController extends Controller
     {
         $_item_id = $request->get('id');
         $_item = Item::where('user_id', $request->user()->id)->where('id',$_item_id)->get();
+        return $_item;
         if ($_item) {
             Item::destroy($_item_id);
             return Constant::successResponse([], 'Item Delete', Constant::$_successStatus);
