@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\LoginRequest;
 use App\Http\Requests\User\RegisterRequest;
+use App\Models\Item;
 use App\Models\User;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
@@ -88,12 +89,17 @@ class UserController extends Controller
         $_user->location = $_location;
         return Constant::successResponse($_user, 'Success', 200);
     }
+
+    public function items(Request $request){
+        $_items=Item::where('user_id',$request->user()->id)->get()->makeHidden(['location','created_at','user']);
+        return Constant::successResponse($_items, 'User Item List', Constant::$_successStatus);;
+    }
 }
 
 //
 //         $_query = "select ST_Latitude(ST_GeomFromText('Point(${_lat} ${_lng})',4326, 'axis-order=lat-long'))  AS `lat_lotus_temple`,
 //    ST_Longitude(ST_GeomFromText('Point(${_lat} ${_lng})',4326)) AS `long_lotus_temple` from users where id =6";
-//        return \DB::select($_query);
+//        return \DB:: select($_query);
 
 //        $_user->location = [
 //            'lat' => empty($_lat) ? '' : $_lat,

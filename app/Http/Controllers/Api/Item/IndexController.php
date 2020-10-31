@@ -46,7 +46,6 @@ class IndexController extends Controller
             $_item->location = \DB::raw("ST_GeomFromText('POINT(${_lat} ${_lng})')");
             $_item->save();
 
-//            $_item->location = $_item_location;
         }
 
         return Constant::successResponse($_item->makeHidden('location', 'updated_at', 'user'), 'Item Create Success', Constant::$_createdStatus);
