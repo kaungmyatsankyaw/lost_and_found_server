@@ -90,8 +90,9 @@ class UserController extends Controller
         return Constant::successResponse($_user, 'Success', 200);
     }
 
-    public function items(Request $request){
-        $_items=Item::where('user_id',$request->user()->id)->get()->makeHidden(['location','created_at','user']);
+    public function items(Request $request)
+    {
+        $_items = Item::where('user_id', $request->user()->id)->orderBy('created_at', 'desc')->get()->makeHidden(['location', 'created_at', 'user']);
         return Constant::successResponse($_items, 'User Item List', Constant::$_successStatus);;
     }
 }
