@@ -44,6 +44,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
         /** Delete */
         Route::post('/delete',[\App\Http\Controllers\Api\Item\IndexController::class,'delete']);
+
+        /** Get location */
+        Route::post('/location',[\App\Http\Controllers\Api\Item\IndexController::class,'getLocation']);
+
     });
 });
 

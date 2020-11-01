@@ -61,14 +61,35 @@ class IndexController extends Controller
 
     public function delete(Request $request)
     {
+//        dd($request->user()->id);
         $_item_id = $request->get('id');
-        $_item = Item::where('user_id', $request->user()->id)->where('id',$_item_id)->get();
-        return $_item;
-        if ($_item) {
+        $_item = \DB::select("select count(*) as count from items where id=? and user_id=?", [$_item_id, $request->user()->id])[0]->count;
+
+        if ($_item != 0) {
             Item::destroy($_item_id);
-            return Constant::successResponse([], 'Item Delete', Constant::$_successStatus);
+            return Constant::successResponse([], 'Item Delete Success', Constant::$_successStatus);
         } else {
-            return Constant::failResponse([], 'Item Delete', Constant::$_unauthorizedStatus);
+            return Constant::failResponse([], 'Item Delete Fail', Constant::$_unauthorizedStatus);
         }
+    }
+
+    public function getLocation(Request $request)
+    {
+        $_item_id = $request->get('id');
+
+        $_query = "select ST_X(location) as latitude,ST_Y(location) as longitude from items where id =?";
+
+        $_result = \DB::select($_query, [$_item_id])[0];
+
+        if ($_result->latitude != null && $_result->longitude) {
+            $_data['lat'] = $_result->latitude;
+            $_data['long'] = $_result->longitude;
+        } else {
+            $_data['lat'] = 0;
+            $_data['long'] = 0;
+
+        }
+
+        return Constant::successResponse($_data, 'Location For Item', Constant::$_successStatus);
     }
 }
