@@ -47,7 +47,6 @@ class IndexController extends Controller
         }
 
         return Constant::successResponse($_item->makeHidden('location', 'updated_at', 'user'), 'Item Create Success', Constant::$_createdStatus);
-
     }
 
 
@@ -56,7 +55,6 @@ class IndexController extends Controller
     {
         $_items = Item::orderBy('created_at', 'desc')->jsonPaginate()->makeHidden(['location', 'update', 'user']);
         return Constant::successResponse($_items, 'Item List', Constant::$_successStatus);
-
     }
 
     /** Delete Items */
@@ -88,7 +86,6 @@ class IndexController extends Controller
         } else {
             $_data['lat'] = 0;
             $_data['long'] = 0;
-
         }
 
         return Constant::successResponse($_data, 'Location For Item', Constant::$_successStatus);
@@ -97,7 +94,7 @@ class IndexController extends Controller
     /** Edit Item */
     public function editItem(Request $request)
     {
-       
+
         $_user_id = $request->user()->id;
         $_item_id = $request->get('id');
         $_item_name = $request->get('name');
@@ -110,35 +107,19 @@ class IndexController extends Controller
 
         ['lat' => $_lat, 'lng' => $_lng] = $_item_location;
 
-        // $_item = Item::where('id', $_item_id)->first()->makeHidden(['user','location']);
-       
-        // // return $_item;
-        // // $_item->user_id = $_user_id;
-        // $_item->name = $_item_name;
-        // $_item->item = $_item;
-        // $_item->type = $_item_type;
-        // $_item->description = $_item_description;
-        // $_item->address = $_item_address;
-        // $_item->time = $_item_found_time;
 
-        // // if (!empty($_lat) && !empty($_lng)) {
-        // //     $_item->location = \DB::raw("ST_GeomFromText('POINT(${_lat} ${_lng})')");
+        $_query = "update items set name=?,item=?,type=?,description=?,address=?,time =?";
 
-        // // }
-
-        // $_item->update();
-
-        $_query="update items set name=?,item=?,type=?,description=?,address=?,time =?";
-
-          if (!empty($_lat) && !empty($_lng)) {
-             $_query .= ',location='. \DB::raw("ST_GeomFromText('POINT(${_lat} ${_lng})')");
-
+        if (!empty($_lat) && !empty($_lng)) {
+            $_query .= ',location=' . \DB::raw("ST_GeomFromText('POINT(${_lat} ${_lng})')");
         }
 
-        return $_query;
-        
+        $_query .= ' where id=?';
+
+        $_result = \DB::select($_query, [$_item_name, $_item, $_item_type, $_item_description, $_item_address, $_item_found_time, $_item_id]);
+
+        dd($_result);
 
         return Constant::successResponse([], 'Item Update Success', Constant::$_createdStatus);
-
     }
 }
