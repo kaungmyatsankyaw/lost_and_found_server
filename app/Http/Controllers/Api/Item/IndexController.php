@@ -97,6 +97,7 @@ class IndexController extends Controller
     /** Edit Item */
     public function editItem(Request $request)
     {
+        return $request->all();
         $_user_id = $request->user()->id;
         $_item_id = $request->get('id');
         $_item_name = $request->get('name');
