@@ -110,7 +110,7 @@ class IndexController extends Controller
 
         ['lat' => $_lat, 'lng' => $_lng] = $_item_location;
 
-        $_item = Item::where('id', $_item_id)->makeHidden(['user'])->get();
+        $_item = Item::where('id', $_item_id)->first()->makeHidden(['user']);
        
         return $_item;
         // $_item->user_id = $_user_id;
