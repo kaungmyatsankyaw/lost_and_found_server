@@ -110,23 +110,33 @@ class IndexController extends Controller
 
         ['lat' => $_lat, 'lng' => $_lng] = $_item_location;
 
-        $_item = Item::where('id', $_item_id)->first()->makeHidden(['user','location']);
+        // $_item = Item::where('id', $_item_id)->first()->makeHidden(['user','location']);
        
-        // return $_item;
-        // $_item->user_id = $_user_id;
-        $_item->name = $_item_name;
-        $_item->item = $_item;
-        $_item->type = $_item_type;
-        $_item->description = $_item_description;
-        $_item->address = $_item_address;
-        $_item->time = $_item_found_time;
+        // // return $_item;
+        // // $_item->user_id = $_user_id;
+        // $_item->name = $_item_name;
+        // $_item->item = $_item;
+        // $_item->type = $_item_type;
+        // $_item->description = $_item_description;
+        // $_item->address = $_item_address;
+        // $_item->time = $_item_found_time;
 
-        // if (!empty($_lat) && !empty($_lng)) {
-        //     $_item->location = \DB::raw("ST_GeomFromText('POINT(${_lat} ${_lng})')");
+        // // if (!empty($_lat) && !empty($_lng)) {
+        // //     $_item->location = \DB::raw("ST_GeomFromText('POINT(${_lat} ${_lng})')");
 
-        // }
+        // // }
 
-        $_item->update();
+        // $_item->update();
+
+        $_query="update items set name=?,item=?,type=?,description=?,address=?,time =?";
+
+          if (!empty($_lat) && !empty($_lng)) {
+             $_query .= ',location='. \DB::raw("ST_GeomFromText('POINT(${_lat} ${_lng})')");
+
+        }
+
+        return $_query;
+        
 
         return Constant::successResponse([], 'Item Update Success', Constant::$_createdStatus);
 
