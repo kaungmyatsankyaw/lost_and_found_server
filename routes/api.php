@@ -33,7 +33,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('/profile', [\App\Http\Controllers\Api\UserController::class, 'profile']);
 
         /** Get User Item */
-        Route::post('/item',[\App\Http\Controllers\Api\UserController::class,'items']);
+        Route::post('/item', [\App\Http\Controllers\Api\UserController::class, 'items']);
     });
     /** Item */
     Route::group(['prefix' => 'item'], function () {
@@ -43,11 +43,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('/list', [\App\Http\Controllers\Api\Item\IndexController::class, 'getItems']);
 
         /** Delete */
-        Route::post('/delete',[\App\Http\Controllers\Api\Item\IndexController::class,'delete']);
+        Route::post('/delete', [\App\Http\Controllers\Api\Item\IndexController::class, 'delete']);
 
         /** Get location */
-        Route::post('/location',[\App\Http\Controllers\Api\Item\IndexController::class,'getLocation']);
+        Route::post('/location', [\App\Http\Controllers\Api\Item\IndexController::class, 'getLocation']);
 
+        /** Update Items */
+        Route::post('/update', [\App\Http\Controllers\Api\Item\IndexController::class, 'editItem']);
     });
 });
 

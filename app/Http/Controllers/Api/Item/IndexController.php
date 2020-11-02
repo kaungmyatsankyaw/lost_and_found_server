@@ -27,7 +27,6 @@ class IndexController extends Controller
         $_item_address = $request->get('address');
         $_item_location = $request->get('location');
         $_item_found_time = $request->get('time');
-//        $_item_phone = $request->get('phone');
 
         ['lat' => $_lat, 'lng' => $_lng] = $_item_location;
 
@@ -45,13 +44,14 @@ class IndexController extends Controller
         if (!empty($_lat) && !empty($_lng)) {
             $_item->location = \DB::raw("ST_GeomFromText('POINT(${_lat} ${_lng})')");
             $_item->save();
-
         }
 
         return Constant::successResponse($_item->makeHidden('location', 'updated_at', 'user'), 'Item Create Success', Constant::$_createdStatus);
 
     }
 
+
+    /** Get All Items */
     public function getItems()
     {
         $_items = Item::orderBy('created_at', 'desc')->jsonPaginate()->makeHidden(['location', 'update', 'user']);
@@ -59,9 +59,9 @@ class IndexController extends Controller
 
     }
 
+    /** Delete Items */
     public function delete(Request $request)
     {
-//        dd($request->user()->id);
         $_item_id = $request->get('id');
         $_item = \DB::select("select count(*) as count from items where id=? and user_id=?", [$_item_id, $request->user()->id])[0]->count;
 
@@ -73,6 +73,7 @@ class IndexController extends Controller
         }
     }
 
+    /** Get Location */
     public function getLocation(Request $request)
     {
         $_item_id = $request->get('id');
@@ -91,5 +92,40 @@ class IndexController extends Controller
         }
 
         return Constant::successResponse($_data, 'Location For Item', Constant::$_successStatus);
+    }
+
+    /** Edit Item */
+    public function editItem(Request $request)
+    {
+        $_user_id = $request->user()->id;
+        $_item_id = $request->get('id');
+        $_item_name = $request->get('name');
+        $_item_type = $request->get('type');
+        $_item_description = $request->get('description');
+        $_item = $request->get('item');
+        $_item_address = $request->get('address');
+        $_item_location = $request->get('location');
+        $_item_found_time = $request->get('time');
+
+        ['lat' => $_lat, 'lng' => $_lng] = $_item_location;
+
+        $_item = Item::where('id', $_item_id)->first();
+        $_item->user_id = $_user_id;
+        $_item->name = $_item_name;
+        $_item->item = $_item;
+        $_item->type = $_item_type;
+        $_item->description = $_item_description;
+        $_item->address = $_item_address;
+        $_item->time = $_item_found_time;
+
+        if (!empty($_lat) && !empty($_lng)) {
+            $_item->location = \DB::raw("ST_GeomFromText('POINT(${_lat} ${_lng})')");
+
+        }
+
+        $_item->save();
+
+        return Constant::successResponse($_item->makeHidden('location', 'updated_at', 'user'), 'Item Create Success', Constant::$_createdStatus);
+
     }
 }
