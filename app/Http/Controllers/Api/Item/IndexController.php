@@ -108,7 +108,7 @@ class IndexController extends Controller
         ['lat' => $_lat, 'lng' => $_lng] = $_item_location;
 
 
-        $_query = "update items set name=?,item=?,type=?,description=?,address=?,time =?";
+        $_query = "update items set name=?,item=?,type=?,description=?,address=?,time =?,updated_at=?";
 
         if (!empty($_lat) && !empty($_lng)) {
             $_query .= ',location=' . \DB::raw("ST_GeomFromText('POINT(${_lat} ${_lng})')");
@@ -116,7 +116,7 @@ class IndexController extends Controller
 
         $_query .= ' where id=?';
 
-        $_result = \DB::select($_query, [$_item_name, $_item, $_item_type, $_item_description, $_item_address, $_item_found_time, $_item_id]);
+        $_result = \DB::select($_query, [$_item_name, $_item, $_item_type, $_item_description, $_item_address, $_item_found_time,date('Y-m-d H:i:s') ,$_item_id]);
 
         dd($_result);
 
