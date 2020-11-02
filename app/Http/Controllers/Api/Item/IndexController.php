@@ -125,7 +125,7 @@ class IndexController extends Controller
 
         $_item->save();
 
-        return Constant::successResponse($_item->makeHidden('location', 'updated_at', 'user'), 'Item Create Success', Constant::$_createdStatus);
+        return Constant::successResponse([], 'Item Create Success', Constant::$_createdStatus);
 
     }
 }
