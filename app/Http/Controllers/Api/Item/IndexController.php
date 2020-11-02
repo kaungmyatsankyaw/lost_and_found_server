@@ -110,7 +110,7 @@ class IndexController extends Controller
 
         ['lat' => $_lat, 'lng' => $_lng] = $_item_location;
 
-        $_item = Item::where('id', $_item_id)->first()->makeHidden(['user']);
+        $_item = Item::where('id', $_item_id)->first()->makeHidden(['user','location']);
        
         // return $_item;
         // $_item->user_id = $_user_id;
@@ -121,10 +121,10 @@ class IndexController extends Controller
         $_item->address = $_item_address;
         $_item->time = $_item_found_time;
 
-        if (!empty($_lat) && !empty($_lng)) {
-            $_item->location = \DB::raw("ST_GeomFromText('POINT(${_lat} ${_lng})')");
+        // if (!empty($_lat) && !empty($_lng)) {
+        //     $_item->location = \DB::raw("ST_GeomFromText('POINT(${_lat} ${_lng})')");
 
-        }
+        // }
 
         $_item->update();
 
