@@ -126,7 +126,7 @@ class IndexController extends Controller
 
         $_item->save();
 
-        return Constant::successResponse([], 'Item Create Success', Constant::$_createdStatus);
+        return Constant::successResponse([], 'Item Update Success', Constant::$_createdStatus);
 
     }
 }
