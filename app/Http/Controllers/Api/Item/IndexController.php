@@ -119,10 +119,10 @@ class IndexController extends Controller
         $_item->address = $_item_address;
         $_item->time = $_item_found_time;
 
-        if (!empty($_lat) && !empty($_lng)) {
-            $_item->location = \DB::raw("ST_GeomFromText('POINT(${_lat} ${_lng})')");
+        // if (!empty($_lat) && !empty($_lng)) {
+        //     $_item->location = \DB::raw("ST_GeomFromText('POINT(${_lat} ${_lng})')");
 
-        }
+        // }
 
         $_item->save();
 
