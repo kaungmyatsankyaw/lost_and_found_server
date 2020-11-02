@@ -111,7 +111,7 @@ class IndexController extends Controller
 
         $_item = Item::where('id', $_item_id)->first();
        
-        $_item->user_id = $_user_id;
+        // $_item->user_id = $_user_id;
         $_item->name = $_item_name;
         $_item->item = $_item;
         $_item->type = $_item_type;
@@ -124,7 +124,7 @@ class IndexController extends Controller
 
         // }
 
-        $_item->save();
+        $_item->update();
 
         return Constant::successResponse([], 'Item Update Success', Constant::$_createdStatus);
 
