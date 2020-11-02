@@ -116,7 +116,7 @@ class IndexController extends Controller
 
         $_query .= ' where id=?';
 
-        $_result = \DB::select($_query, [$_item_name, $_item, $_item_type, $_item_description, $_item_address, $_item_found_time,date('Y-m-d H:i:s') ,$_item_id]);
+        $_result = \DB::update($_query, [$_item_name, $_item, $_item_type, $_item_description, $_item_address, $_item_found_time,date('Y-m-d H:i:s') ,$_item_id]);
 
         dd($_result);
 
