@@ -116,10 +116,12 @@ class IndexController extends Controller
 
         $_query .= ' where id=?';
 
-        $_result = \DB::update($_query, [$_item_name, $_item, $_item_type, $_item_description, $_item_address, $_item_found_time,date('Y-m-d H:i:s') ,$_item_id]);
+        $_result = \DB::update($_query, [$_item_name, $_item, $_item_type, $_item_description, $_item_address, $_item_found_time, date('Y-m-d H:i:s'), $_item_id]);
 
-        dd($_result);
-
-        return Constant::successResponse([], 'Item Update Success', Constant::$_createdStatus);
+        if ($_result != 0) {
+            return Constant::successResponse([], 'Item Update Success', Constant::$_createdStatus);
+        } else {
+            return Constant::failResponse([], 'Item Update Fail', Constant::$_internalServerStatus);
+        }
     }
 }
