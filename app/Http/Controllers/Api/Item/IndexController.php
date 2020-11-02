@@ -97,7 +97,7 @@ class IndexController extends Controller
     /** Edit Item */
     public function editItem(Request $request)
     {
-        return $request->all();
+       
         $_user_id = $request->user()->id;
         $_item_id = $request->get('id');
         $_item_name = $request->get('name');
@@ -112,6 +112,7 @@ class IndexController extends Controller
 
         $_item = Item::where('id', $_item_id)->first();
        
+        return $_item;
         // $_item->user_id = $_user_id;
         $_item->name = $_item_name;
         $_item->item = $_item;
