@@ -12,12 +12,17 @@ use Illuminate\Http\Request;
 class IndexController extends Controller
 {
 
+
+
     /** Create Items
      * @param CreateRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function create(CreateRequest $request)
     {
+        \Log::info(json_encode($request->all()));
+
+
         $_user_id = $request->user()->id;
 
         $_item_name = $request->get('name');
@@ -116,12 +121,34 @@ class IndexController extends Controller
 
         $_query .= ' where id=?';
 
-        $_result = \DB::update($_query, [$_item_name, $_item, $_item_type, $_item_description, $_item_address, $_item_found_time, date('Y-m-d H:i:s'), $_item_id]);
+        $_result = \DB::update($_query, [$_item_name, $_item, $_item_type, $_item_description, $_item_address, date('Y-m-d H:i:s', strtotime($_item_found_time)), date('Y-m-d H:i:s'), $_item_id]);
+
+        $_item = Item::where('id', $_item_id)->get()->makeHidden(['location', 'updated_at', 'user'])[0];
 
         if ($_result != 0) {
-            return Constant::successResponse([], 'Item Update Success', Constant::$_createdStatus);
+            return Constant::successResponse($_item, 'Item Update Success', Constant::$_createdStatus);
         } else {
             return Constant::failResponse([], 'Item Update Fail', Constant::$_internalServerStatus);
         }
     }
 }
+
+
+// SELECT id,name,
+//       111.045* DEGREES(ACOS(LEAST(1.0, COS(RADIANS(latpoint))
+//                  * COS(RADIANS(st_x(location)))
+//                  * COS(RADIANS(longpoint) - RADIANS(st_y(location)))
+//                  + SIN(RADIANS(latpoint))
+//                  * SIN(RADIANS(st_x(location)))))) AS distance_in_km
+//  FROM  items zip
+//  JOIN (
+//      SELECT  21.9162  AS latpoint,  95.956 AS longpoint,
+//      1000.0 AS radius,      111.045 AS distance_unit
+//    ) AS p ON 1=1
+//    WHERE st_x(location)
+//      BETWEEN p.latpoint  - (p.radius / p.distance_unit)
+//          AND p.latpoint  + (p.radius / p.distance_unit)
+//     AND st_y(location)
+//      BETWEEN p.longpoint - (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint))))
+//          AND p.longpoint + (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint))))
+//  ORDER BY distance_in_km

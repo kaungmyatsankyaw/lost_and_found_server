@@ -24,7 +24,7 @@ class UserController extends Controller
             $_user = Auth::user();
             $_token = $_user->createToken('lost@found!22');
 
-            return $this->successRespoLostFoundnse([
+            return $this->successResponse([
                 'status' => 1,
                 'message' => 'Login Success',
                 'token' => $_token->plainTextToken,
