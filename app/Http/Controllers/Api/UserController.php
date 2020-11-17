@@ -30,7 +30,6 @@ class UserController extends Controller
                 'token' => $_token->plainTextToken,
                 'user' => $_user->id
             ]);
-
         } else {
             return $this->unAuthResponse([
                 'status' => 0,
@@ -39,7 +38,6 @@ class UserController extends Controller
                 'user' => ''
             ]);
         }
-
     }
 
     /** Register
@@ -65,7 +63,6 @@ class UserController extends Controller
             'message' => 'Register Success',
             'user' => $_user->id
         ]);
-
     }
 
     /** Get Profile
@@ -74,7 +71,7 @@ class UserController extends Controller
     public function profile(Request $request)
     {
 
-        $_user = $request->user();
+        $_user = $request->user()->makeHidden(['items']);
 
         if (!empty($_user->location)) {
             $_location = \DB::select("SELECT ST_X(location) as lat,ST_Y(location) as lng FROM users where id=?;", [$request->user()->id]);
@@ -85,7 +82,7 @@ class UserController extends Controller
             ];
         }
 
-        $_user->item_count = $_user->items->makeHidden('location')->count();
+        $_user->item_count = $_user->items->makeHidden(['location'])->count();
         $_user->location = $_location;
         return Constant::successResponse($_user, 'Success', 200);
     }

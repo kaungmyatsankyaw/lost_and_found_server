@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 /** User */
 Route::group(['prefix' => 'user'], function () {
     /** Login User */
@@ -20,8 +21,6 @@ Route::group(['prefix' => 'user'], function () {
 
     /** Register User */
     Route::post('/register', [\App\Http\Controllers\Api\UserController::class, 'register']);
-
-
 });
 
 
