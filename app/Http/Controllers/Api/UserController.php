@@ -46,6 +46,7 @@ class UserController extends Controller
      */
     public function register(RegisterRequest $request)
     {
+
         $_lat = $request->get('lat');
         $_lng = $request->get('lng');
 
@@ -74,7 +75,11 @@ class UserController extends Controller
         $_user = $request->user()->makeHidden(['items']);
 
         if (!empty($_user->location)) {
-            $_location = \DB::select("SELECT ST_X(location) as lat,ST_Y(location) as lng FROM users where id=?;", [$request->user()->id]);
+            $_location_ = \DB::select("SELECT ST_X(location) as lat,ST_Y(location) as lng FROM users where id=?;", [$request->user()->id])[0];
+            $_location = [
+                'lat' => (string)$_location_->lat,
+                'lng' => (string)$_location_->lng
+            ];
         } else {
             $_location = [
                 'lat' => '',

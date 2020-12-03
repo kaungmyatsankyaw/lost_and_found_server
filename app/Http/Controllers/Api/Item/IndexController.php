@@ -131,24 +131,58 @@ class IndexController extends Controller
             return Constant::failResponse([], 'Item Update Fail', Constant::$_internalServerStatus);
         }
     }
+
+    public function detail(Request $request)
+    {
+        $_item_id = $request->get('item_id');
+
+        $_item = Item::where('id', $_item_id)->first();
+
+        if ($_item->location != null) {
+
+            $_query = "select ST_X(location) as latitude,ST_Y(location) as longitude from items where id =?";
+
+            $_result = \DB::select($_query, [$_item_id])[0];
+
+            $_l_query = "SELECT id,name,st_x(location) as lat,st_y(location) as lng,
+                        IF(type = 1, 'Found', 'Lost') as type,
+                                111.045* DEGREES(ACOS(LEAST(1.0, COS(RADIANS(latpoint))
+                                * COS(RADIANS(st_x(location)))
+                                * COS(RADIANS(longpoint) - RADIANS(st_y(location)))
+                                + SIN(RADIANS(latpoint))
+                                * SIN(RADIANS(st_x(location)))))) AS distance
+                        FROM  items zip
+                        JOIN (
+                        SELECT  ?  AS latpoint,  ? AS longpoint,
+                        10.0 AS radius,      111.045 AS distance_unit
+                        ) AS p ON 1=1
+                        WHERE st_x(location)
+                        BETWEEN p.latpoint  - (p.radius / p.distance_unit)
+                        AND p.latpoint  + (p.radius / p.distance_unit)
+                        AND st_y(location)
+                        BETWEEN p.longpoint - (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint))))
+                        AND p.longpoint + (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint))))
+                        AND  zip.id != ?
+                         ORDER BY distance  LIMIT 8";
+
+            $_latitude = $_result->latitude;
+            $_longitude = $_result->longitude;
+
+            $_l_result = \DB::select($_l_query, [$_result->latitude, $_result->longitude, $_item_id]);
+        } else {
+            $_latitude = 0;
+            $_longitude = 0;
+            $_l_result = [];
+        }
+
+        $_list = [
+            'item' => $_item->makeHidden(['location', 'user', 'updated_at']),
+            'near_item' => $_l_result,
+            'near_item_count' => count($_l_result),
+            'latitude' => $_latitude,
+            'longitude' => $_longitude
+        ];
+
+        return Constant::successResponse($_list, 'Item Update Success', Constant::$_createdStatus);
+    }
 }
-
-
-// SELECT id,name,
-//       111.045* DEGREES(ACOS(LEAST(1.0, COS(RADIANS(latpoint))
-//                  * COS(RADIANS(st_x(location)))
-//                  * COS(RADIANS(longpoint) - RADIANS(st_y(location)))
-//                  + SIN(RADIANS(latpoint))
-//                  * SIN(RADIANS(st_x(location)))))) AS distance_in_km
-//  FROM  items zip
-//  JOIN (
-//      SELECT  21.9162  AS latpoint,  95.956 AS longpoint,
-//      1000.0 AS radius,      111.045 AS distance_unit
-//    ) AS p ON 1=1
-//    WHERE st_x(location)
-//      BETWEEN p.latpoint  - (p.radius / p.distance_unit)
-//          AND p.latpoint  + (p.radius / p.distance_unit)
-//     AND st_y(location)
-//      BETWEEN p.longpoint - (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint))))
-//          AND p.longpoint + (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint))))
-//  ORDER BY distance_in_km

@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\Item\IndexController;
+use App\Http\Controllers\Api\NotiController;
+use App\Http\Controllers\Api\TokenController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +39,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     });
     /** Item */
     Route::group(['prefix' => 'item'], function () {
+
+        /** Detail */
+        Route::post('/detail', [IndexController::class, 'detail']);
+
         /** Create */
         Route::post('/create', [\App\Http\Controllers\Api\Item\IndexController::class, 'create']);
         /** List */
@@ -52,8 +59,16 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     });
 });
 
-/** Item */
-Route::group(['prefix' => 'item'], function () {
-    /** Create */
-    Route::get('/create', [\App\Http\Controllers\Api\Item\IndexController::class, 'create']);
+
+
+/** Noti Token */
+Route::group(['prefix' => 'noti'], function () {
+    /** Store Token */
+    Route::post('/store/token', [\App\Http\Controllers\Api\TokenController::class, 'storeToken']);
+
+    /** Update Noti Status */
+    Route::post('/update/status', [\App\Http\Controllers\Api\TokenController::class, 'updateToken']);
 });
+
+
+Route::post('/noti/test', [\App\Http\Controllers\Api\NotiController::class, 'test']);

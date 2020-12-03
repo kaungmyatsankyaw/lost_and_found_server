@@ -24,7 +24,8 @@ class User extends Authenticatable
         'username',
         'address',
         'location',
-        'phone'
+        'phone',
+        'udid'
     ];
 
     public function getAddressAttribute()
