@@ -8,19 +8,16 @@ use App\Http\Requests\Item\CreateRequest;
 use App\Models\Item;
 use Illuminate\Http\Request;
 
+use function PHPUnit\Framework\isEmpty;
 
 class IndexController extends Controller
 {
-
-
-
     /** Create Items
      * @param CreateRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function create(CreateRequest $request)
     {
-        \Log::info(json_encode($request->all()));
 
 
         $_user_id = $request->user()->id;
@@ -46,10 +43,15 @@ class IndexController extends Controller
             'time' => $_item_found_time
         ]);
 
+       
         if (!empty($_lat) && !empty($_lng)) {
             $_item->location = \DB::raw("ST_GeomFromText('POINT(${_lat} ${_lng})')");
-            $_item->save();
+             $_item->save();
         }
+
+      
+       
+        app()->call('App\Http\Controllers\Api\NotiController@notiSend', [json_encode($_item)]);
 
         return Constant::successResponse($_item->makeHidden('location', 'updated_at', 'user'), 'Item Create Success', Constant::$_createdStatus);
     }
@@ -79,6 +81,7 @@ class IndexController extends Controller
     /** Get Location */
     public function getLocation(Request $request)
     {
+
         $_item_id = $request->get('id');
 
         $_query = "select ST_X(location) as latitude,ST_Y(location) as longitude from items where id =?";
@@ -138,14 +141,26 @@ class IndexController extends Controller
 
         $_item = Item::where('id', $_item_id)->first();
 
+        if ($_item == null) {
+            $_list = [
+                'item' => "",
+                'near_item' => [],
+                'near_item_count' => 0,
+                'latitude' => '',
+                'longitude' => ''
+            ];
+
+            return Constant::successResponse($_list, 'Item Update Success', Constant::$_createdStatus);
+        }
+
         if ($_item->location != null) {
 
             $_query = "select ST_X(location) as latitude,ST_Y(location) as longitude from items where id =?";
 
             $_result = \DB::select($_query, [$_item_id])[0];
 
-            $_l_query = "SELECT id,name,st_x(location) as lat,st_y(location) as lng,
-                        IF(type = 1, 'Found', 'Lost') as type,
+            $_l_query = "SELECT id,name,st_x(location) as lat,st_y(location) as lng,substring(description,1,100) as description,
+                        IF(type = 1, 'Lost', 'Found') as type,
                                 111.045* DEGREES(ACOS(LEAST(1.0, COS(RADIANS(latpoint))
                                 * COS(RADIANS(st_x(location)))
                                 * COS(RADIANS(longpoint) - RADIANS(st_y(location)))
@@ -174,6 +189,8 @@ class IndexController extends Controller
             $_longitude = 0;
             $_l_result = [];
         }
+
+
 
         $_list = [
             'item' => $_item->makeHidden(['location', 'user', 'updated_at']),
